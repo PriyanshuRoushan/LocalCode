@@ -1,16 +1,47 @@
-# React + Vite
+# Welcome to LocalCode 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+LocalCode is an innovative offline coding platform that brings the power of modern web technologies to your desktop. This project leverages React (with Vite for fast development), Electron to create a seamless cross-platform application, and SQLite for robust database management. It has been designed to provide an efficient, user-friendly coding experience, even without an internet connection.
 
-Currently, two official plugins are available:
+## 🎯 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Responsive Frontend**: Developed with React & Vite for quick and efficient user interactions.
+- **Cross-Platform Desktop Application**: Powered by Electron, LocalCode works seamlessly on Windows, Mac, and Linux.
+- **Embedded Database**: Using SQLite for hassle-free database integration.
+- **Secure Authentication**: Incorporates BcryptJS for password security.
+- **Dynamic Routing**: Managed using React Router DOM to ensure smooth transitions.
+- **State Management**: Leveraging Zustand for a lightweight and predictable state management.
+- **Rich Code Editor Support**: Features CodeMirror with syntax highlighting for C++, Java, and Python.
 
-## React Compiler
+## 🚀 Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Follow these steps to quickly set up the project on your machine:
 
-## Expanding the ESLint configuration
+```bash
+npm create vite@latest LocalCode
+cd LocalCode
+npm install
+npm install electron electron-builder better-sqlite3 bcryptjs react-router-dom zustand @codemirror/state @codemirror/view @codemirror/lang-cpp @codemirror/lang-java @codemirror/lang-python
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠 Technologies Used
+
+- **React**: For building the user interface
+- **Vite**: As a blazingly fast frontend build tool
+- **Electron**: To transform the web app into a desktop application
+- **SQLite**: Lightweight yet powerful database engine
+- **BcryptJS**: To handle password hashing
+- **React Router DOM**: Used for routing
+- **Zustand**: For efficient state management
+- **CodeMirror**: Enabling a rich coding environment
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+## 🌐 Contribute
+
+Contributions are welcome! Feel free to open an issue or submit a pull request to improve this offline coding platform.
+
+---
+
+Built with ❤️ by the LocalCode team!
