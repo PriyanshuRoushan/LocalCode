@@ -1,47 +1,71 @@
-# Welcome to LocalCode 
+# 🚀 LocalCode Pro
 
-LocalCode is an innovative offline coding platform that brings the power of modern web technologies to your desktop. This project leverages React (with Vite for fast development), Electron to create a seamless cross-platform application, and SQLite for robust database management. It has been designed to provide an efficient, user-friendly coding experience, even without an internet connection.
-
-## 🎯 Features
-
-- **Responsive Frontend**: Developed with React & Vite for quick and efficient user interactions.
-- **Cross-Platform Desktop Application**: Powered by Electron, LocalCode works seamlessly on Windows, Mac, and Linux.
-- **Embedded Database**: Using SQLite for hassle-free database integration.
-- **Secure Authentication**: Incorporates BcryptJS for password security.
-- **Dynamic Routing**: Managed using React Router DOM to ensure smooth transitions.
-- **State Management**: Leveraging Zustand for a lightweight and predictable state management.
-- **Rich Code Editor Support**: Features CodeMirror with syntax highlighting for C++, Java, and Python.
-
-## 🚀 Quick Start
-
-Follow these steps to quickly set up the project on your machine:
-
-```bash
-npm create vite@latest LocalCode
-cd LocalCode
-npm install
-npm install electron electron-builder better-sqlite3 bcryptjs react-router-dom zustand @codemirror/state @codemirror/view @codemirror/lang-cpp @codemirror/lang-java @codemirror/lang-python
-```
-
-## 🛠 Technologies Used
-
-- **React**: For building the user interface
-- **Vite**: As a blazingly fast frontend build tool
-- **Electron**: To transform the web app into a desktop application
-- **SQLite**: Lightweight yet powerful database engine
-- **BcryptJS**: To handle password hashing
-- **React Router DOM**: Used for routing
-- **Zustand**: For efficient state management
-- **CodeMirror**: Enabling a rich coding environment
-
-## 📜 License
-
-This project is licensed under the MIT License.
-
-## 🌐 Contribute
-
-Contributions are welcome! Feel free to open an issue or submit a pull request to improve this offline coding platform.
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?size=24&duration=3000&color=F7C948&center=true&vCenter=true&width=600&lines=Offline+DSA+Practice+Platform;Built+with+Electron+%2B+React;Code+Anytime%2C+Anywhere;Level+Up+Your+Problem+Solving+Skills" />
+</p>
 
 ---
 
-Built with ❤️ by the LocalCode team!
+## 🧠 About the Project
+
+💡 **LocalCode Pro** is an **offline-first DSA practice platform** inspired by LeetCode.
+It allows developers to **practice Data Structures & Algorithms anytime, anywhere — even without internet access**.
+
+---
+
+## ✨ Features
+
+* 🧠 Offline DSA Practice
+* 📊 Interactive Dashboard Analytics
+* 📚 Structured Problem Sheets
+* 🛠️ Create Custom Sheets
+* 📈 Submission History Tracking
+* 👤 Profile with Stats & Heatmaps
+* ⚡ Fast Desktop Experience (Electron)
+
+---
+
+## 🖼️ Screenshots
+
+<p align="center">
+  <img src="public/dashbord.png" width="45%" style="margin: 20px;" />
+  <img src="public/prblems.png" width="45%" style="margin: 20px;" />
+</p>
+
+<p align="center">
+  <img src="public/sheets.png" width="45%" style="margin: 20px;" />
+  <img src="public/profile.png" width="45%" style="margin: 20px;" />
+</p>
+
+---
+
+## ⚙️ Installation
+
+```bash
+git clone https://github.com/your-username/LocalCode.git
+cd LocalCode
+npm install
+npm run dev
+```
+
+---
+
+## 🚀 Future Enhancements
+
+* 🌐 Cloud Sync
+* 🔐 Authentication System
+* 🏆 Contest Mode
+* 📊 Advanced Analytics
+* ☁️ Backup & Restore
+
+---
+
+## 👨‍💻 Author
+
+**Priyanshu Roushan**
+
+---
+
+<p align="center">
+  ⭐ Star this repo if you found it useful!
+</p>
