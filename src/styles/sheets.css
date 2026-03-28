@@ -1,0 +1,353 @@
+/* ============================================================
+   sheets.css — Mastery Sheets page
+   ============================================================ */
+
+/* ── Page header ─────────────────────────────────────────────── */
+.sheets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.sheets-header__text { max-width: 36rem; }
+
+.sheets-header__title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.sheets-header__subtitle {
+  color: #a3a3a3;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+.sheets-header__cta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background-color: var(--surface-container-high);
+  color: var(--primary);
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--transition-fast);
+}
+.sheets-header__cta:hover { background-color: var(--surface-container-highest); }
+
+/* ── Section heading ─────────────────────────────────────────── */
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.section-heading h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.section-heading__line {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(to right, #262626, transparent);
+}
+
+/* ── Sheet cards grid ────────────────────────────────────────── */
+.sheets-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 5rem;
+}
+
+/* ── Sheet card (predefined) ────────────────────────────────── */
+.sheet-card {
+  background-color: var(--surface-container-low);
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  transition: background-color var(--transition-normal), box-shadow var(--transition-normal);
+  cursor: pointer;
+}
+
+.sheet-card::before {
+  content: '';
+  position: absolute;
+  top: -4rem;
+  right: -4rem;
+  width: 8rem;
+  height: 8rem;
+  background: rgba(255, 233, 183, 0.05);
+  border-radius: 9999px;
+  filter: blur(2rem);
+  transition: opacity var(--transition-normal);
+}
+
+.sheet-card:hover {
+  background-color: var(--surface-container);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.sheet-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+.sheet-card__icon {
+  width: 3rem;
+  height: 3rem;
+  background-color: rgba(255, 233, 183, 0.1);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.sheet-card__badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #737373;
+}
+
+.sheet-card__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--on-surface);
+}
+
+.sheet-card__desc {
+  font-size: 0.875rem;
+  color: #737373;
+  margin-bottom: 2rem;
+}
+
+/* ── Progress bar inside card ──────────────────────────────── */
+.sheet-progress__header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.sheet-progress__label { color: #a3a3a3; }
+.sheet-progress__pct   { color: var(--primary); }
+
+.sheet-progress__track {
+  width: 100%;
+  height: 0.5rem;
+  background-color: var(--surface-container-highest);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.sheet-progress__fill {
+  height: 100%;
+  background-color: var(--primary-container);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 10px rgba(247, 201, 72, 0.3);
+}
+
+.sheet-progress__dots {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.sheet-progress__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+}
+
+/* ── Custom sheet card ────────────────────────────────────────── */
+.sheet-card--custom {
+  background-color: var(--surface-container-lowest);
+  border: 1px solid rgba(78, 70, 53, 0.1);
+}
+.sheet-card--custom:hover { border-color: rgba(247, 201, 72, 0.3); }
+
+.sheet-card__new-badge {
+  background-color: rgba(255, 233, 183, 0.2);
+  color: var(--primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sheet-card__meta {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #525252;
+}
+
+/* ── Create placeholder card ────────────────────────────────── */
+.sheet-card--create {
+  border: 2px dashed #262626;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: pointer;
+  transition: border-color var(--transition-normal);
+  min-height: 16rem;
+}
+.sheet-card--create:hover { border-color: rgba(247, 201, 72, 0.3); }
+
+.sheet-card--create__icon-wrap {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  background-color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: transform var(--transition-fast);
+}
+.sheet-card--create:hover .sheet-card--create__icon-wrap { transform: scale(1.1); }
+.sheet-card--create:hover .material-symbols-outlined     { color: var(--primary); }
+
+.sheet-card--create__label {
+  color: #737373;
+  font-weight: 700;
+  transition: color var(--transition-fast);
+}
+.sheet-card--create:hover .sheet-card--create__label { color: #d4d4d4; }
+
+/* ── Bento stats section ─────────────────────────────────────── */
+.sheets-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2rem;
+}
+
+.sheets-momentum-card {
+  grid-column: span 8;
+  background-color: rgba(42, 42, 42, 0.5);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.sheets-momentum-card__bg-icon {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  opacity: 0.1;
+  font-size: 15rem !important;
+  pointer-events: none;
+}
+
+.sheets-momentum-card__content { position: relative; z-index: 10; flex: 1; }
+
+.sheets-momentum-card__eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #a3a3a3;
+  margin-bottom: 1rem;
+}
+
+.sheets-momentum-card__big-num {
+  font-size: 4.5rem;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.sheets-momentum-card__sub {
+  color: #737373;
+  font-weight: 500;
+  margin-left: 1rem;
+}
+
+.sheets-momentum-card__metrics {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.sheets-momentum-card__metric-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #737373;
+  margin-bottom: 0.25rem;
+}
+
+.sheets-momentum-card__metric-val {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.sheets-momentum-card__image {
+  width: 33.33%;
+  aspect-ratio: 16/9;
+}
+.sheets-momentum-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.sheets-elite-card {
+  grid-column: span 4;
+  background-color: var(--primary-container);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  color: var(--on-primary-fixed);
+}
+
+.sheets-elite-card__icon { font-size: 2.5rem !important; margin-bottom: 1.5rem; display: block; }
+.sheets-elite-card__title { font-size: 1.875rem; font-weight: 900; line-height: 1.2; margin-bottom: 1rem; }
+.sheets-elite-card__body  { color: rgba(36, 26, 0, 0.7); margin-bottom: 2rem; font-weight: 500; line-height: 1.6; }
+.sheets-elite-card__link  { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; text-decoration: underline; text-underline-offset: 0.5rem; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1279px) {
+  .sheets-grid { grid-template-columns: repeat(2, 1fr); }
+  .sheets-momentum-card { grid-column: span 12; }
+  .sheets-elite-card    { grid-column: span 12; }
+  .sheets-momentum-card__image { display: none; }
+}
+
+@media (max-width: 767px) {
+  .sheets-grid { grid-template-columns: 1fr; }
+  .sheets-header { flex-direction: column; align-items: flex-start; }
+  .sheets-stats-grid { gap: 1rem; }
+}
