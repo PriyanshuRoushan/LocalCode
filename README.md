@@ -27,21 +27,42 @@ It allows developers to **practice Data Structures & Algorithms anytime, anywher
 
 ## 🖼️ Screenshots
 
-<p align="center">
-  <img src="public/dashbord.png" width="45%" style="margin: 20px;" />
-  <img src="public/prblems.png" width="45%" style="margin: 20px;" />
-</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <b>📊 Dashboard</b><br/>
+      <img src="public/dashbord.png" width="300"/>
+    </td>
+    <td align="center">
+      <b>💻 Problems</b><br/>
+      <img src="public/prblems.png" width="300"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>📄 Sheets</b><br/>
+      <img src="public/sheets.png" width="300"/>
+    </td>
+    <td align="center">
+      <b>👤 Profile</b><br/>
+      <img src="public/profile.png" width="300"/>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🏗️ Tech Stack
 
 <p align="center">
-  <img src="public/sheets.png" width="45%" style="margin: 20px;" />
-  <img src="public/profile.png" width="45%" style="margin: 20px;" />
+  <img src="https://skillicons.dev/icons?i=react,vite,electron,nodejs,js,css" />
 </p>
 
 ---
 
 ## ⚙️ Installation
 
-```bash
+```bash id="inst01"
 git clone https://github.com/your-username/LocalCode.git
 cd LocalCode
 npm install
@@ -54,18 +75,25 @@ npm run dev
 
 * 🌐 Cloud Sync
 * 🔐 Authentication System
-* 🏆 Contest Mode
-* 📊 Advanced Analytics
-* ☁️ Backup & Restore
 
 ---
 
-## 👨‍💻 Author
-
-**Priyanshu Roushan**
-
----
+## 🔗 Connect
 
 <p align="center">
-  ⭐ Star this repo if you found it useful!
+  🚀 Open to collaboration, feedback, and new opportunities  
 </p>
+
+<p align="center">
+
+<a href="https://www.linkedin.com/in/priyanshu-roushan">
+  <img src="https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin" />
+</a>
+
+<a href="mailto:priyanshuroushan01@gmail.com">
+  <img src="https://img.shields.io/badge/Email-Contact-red?style=for-the-badge&logo=gmail" />
+</a>
+
+</p>
+
+
