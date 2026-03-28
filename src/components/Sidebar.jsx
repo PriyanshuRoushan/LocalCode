@@ -39,8 +39,8 @@ export default function Sidebar({ activePage = "Dashboard", isOpen = false, onCl
             <Icon name="architecture" />
           </div>
           <div>
-            <p className="sidebar__logo-name">Architect</p>
-            <p className="sidebar__logo-tagline">Premium Engine</p>
+            <p className="sidebar__logo-name">LocalCode</p>
+            <p className="sidebar__logo-tagline">Code & Confidence</p>
           </div>
         </div>
 
