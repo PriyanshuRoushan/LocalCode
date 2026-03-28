@@ -1,0 +1,181 @@
+/* ============================================================
+   TopBar.css — fixed top navigation bar
+   ============================================================ */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: calc(100% - var(--sidebar-width));
+  height: var(--topbar-height);
+  z-index: 40;
+  background-color: rgba(19, 19, 19, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  gap: 1rem;
+  transition: width var(--transition-normal);
+}
+
+/* ── Search ─────────────────────────────────────────────────── */
+.topbar__search {
+  position: relative;
+  width: 24rem;
+  flex-shrink: 1;
+}
+
+.topbar__search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #737373;
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.topbar__search-input {
+  width: 100%;
+  background-color: var(--surface-container-low);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  padding: 0.625rem 1rem 0.625rem 3rem;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--on-surface);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.topbar__search-input::placeholder {
+  color: #525252;
+}
+
+.topbar__search-input:focus {
+  border-color: rgba(238, 193, 64, 0.3);
+}
+
+/* ── Right cluster ──────────────────────────────────────────── */
+.topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+/* Stats pill */
+.topbar__stats-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--surface-container-low);
+  border-radius: var(--radius-full);
+}
+
+.topbar__stat {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.topbar__stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #e5e5e5;
+  white-space: nowrap;
+}
+
+.topbar__stat-divider {
+  width: 1px;
+  height: 1rem;
+  background-color: #404040;
+}
+
+/* Icon button */
+.topbar__icon-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-fast);
+}
+
+.topbar__icon-btn:hover {
+  background-color: rgba(64, 64, 64, 0.5);
+}
+
+.topbar__icon-btn .material-symbols-outlined {
+  color: #a3a3a3;
+}
+
+/* Avatar */
+.topbar__avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  border: 2px solid rgba(238, 193, 64, 0.2);
+  object-fit: cover;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.topbar__avatar:hover {
+  border-color: rgba(238, 193, 64, 0.5);
+}
+
+/* Hamburger (mobile only) */
+.topbar__hamburger {
+  display: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-fast);
+}
+
+.topbar__hamburger:hover {
+  background-color: rgba(64, 64, 64, 0.5);
+}
+
+.topbar__hamburger .material-symbols-outlined {
+  color: #a3a3a3;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .topbar {
+    width: 100%;
+    padding: 0 1.5rem;
+  }
+
+  .topbar__hamburger {
+    display: flex;
+  }
+
+  .topbar__search {
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  .topbar__stats-pill {
+    display: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .topbar {
+    padding: 0 1rem;
+  }
+
+  .topbar__search {
+    max-width: 12rem;
+  }
+}

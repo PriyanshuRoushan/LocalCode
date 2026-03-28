@@ -1,0 +1,442 @@
+
+/* ============================================================
+   dashboard.css — styles scoped to the Dashboard page only
+   ============================================================ */
+
+/* ── Hero Section ───────────────────────────────────────────── */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  padding: 3rem;
+  background-color: var(--surface-container-lowest);
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  transition: transform 0.7s ease;
+}
+
+.hero:hover .hero__bg {
+  transform: scale(1.04);
+}
+
+.hero__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__bg-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--surface-container-lowest), rgba(14, 14, 14, 0.6), transparent);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 10;
+}
+
+.hero__title {
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.hero__title span {
+  color: var(--primary);
+}
+
+.hero__subtitle {
+  color: #a3a3a3;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  max-width: 36rem;
+}
+
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  font-size: 1.125rem;
+  box-shadow: 0 20px 40px rgba(238, 193, 64, 0.2);
+}
+
+.hero__cta .material-symbols-outlined {
+  font-size: 1.875rem;
+}
+
+/* ── Bento Grid ─────────────────────────────────────────────── */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+.bento-col-5  { grid-column: span 5; }
+.bento-col-7  { grid-column: span 7; }
+.bento-col-8  { grid-column: span 8; }
+.bento-col-4  { grid-column: span 4; }
+.bento-col-12 { grid-column: span 12; }
+
+/* ── Problem Distribution ──────────────────────────────────── */
+.dist-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dist-card__body {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.dist-ring {
+  position: relative;
+  width: 10rem;
+  height: 10rem;
+  flex-shrink: 0;
+}
+
+.dist-ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dist-ring__count {
+  font-size: 1.875rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.dist-ring__label {
+  font-size: 10px;
+  color: #737373;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.dist-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.dist-legend__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dist-legend__dot-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dist-legend__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+}
+
+.dist-legend__name {
+  font-size: 0.875rem;
+  color: #a3a3a3;
+}
+
+.dist-legend__count {
+  font-weight: 700;
+}
+
+/* ── Weekly Frequency ───────────────────────────────────────── */
+.freq-card__bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 12rem;
+  gap: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.freq-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  cursor: pointer;
+}
+
+.freq-bar__fill {
+  width: 100%;
+  border-radius: var(--radius-full);
+  transition: background-color 0.2s ease;
+}
+
+.freq-bar__fill--active {
+  background-color: var(--primary-container);
+  box-shadow: 0 4px 20px rgba(238, 193, 64, 0.15);
+}
+
+.freq-bar__fill--inactive {
+  background-color: var(--surface-container-highest);
+}
+
+.freq-bar__fill--inactive:hover {
+  background-color: rgba(238, 193, 64, 0.2);
+}
+
+.freq-bar__day {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.freq-bar__day--active   { color: var(--primary); }
+.freq-bar__day--inactive { color: #737373; }
+
+/* ── Activity Feed ──────────────────────────────────────────── */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  gap: 1rem;
+}
+
+.activity-item:hover {
+  background-color: var(--surface-container-highest);
+}
+
+.activity-item__left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.activity-item__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activity-item__icon--accepted {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.activity-item__icon--rejected {
+  background-color: rgba(147, 0, 10, 0.2);
+  color: var(--error);
+}
+
+.activity-item__title {
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-item__meta {
+  font-size: 0.75rem;
+  color: #737373;
+  margin-top: 0.125rem;
+}
+
+/* ── Focus Mode Card ────────────────────────────────────────── */
+.focus-card {
+  background-color: var(--surface-container-low);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  border-left: 4px solid var(--primary);
+}
+
+.focus-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.focus-card__title {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.focus-card__body {
+  font-size: 0.875rem;
+  color: #a3a3a3;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.focus-card__btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--surface-container-highest);
+  border-radius: var(--radius-full);
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: background-color 0.2s ease;
+}
+
+.focus-card__btn:hover {
+  background-color: var(--surface-container-high);
+}
+
+/* ── Pro Perks Card ─────────────────────────────────────────── */
+.perks-card {
+  background-color: var(--surface-container-low);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 11rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.perks-card__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.1;
+}
+
+.perks-card__content {
+  position: relative;
+  z-index: 10;
+}
+
+.perks-card__title {
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.perks-card__sub {
+  font-size: 0.75rem;
+  color: #737373;
+  margin-bottom: 1rem;
+}
+
+.perks-card__bar-track {
+  width: 100%;
+  height: 4px;
+  background-color: var(--surface-container-highest);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.perks-card__bar-fill {
+  height: 100%;
+  background-color: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+}
+
+/* ── Responsive: Dashboard ──────────────────────────────────── */
+@media (max-width: 1279px) {
+  .bento-col-5 { grid-column: span 6; }
+  .bento-col-7 { grid-column: span 6; }
+  .bento-col-8 { grid-column: span 7; }
+  .bento-col-4 { grid-column: span 5; }
+}
+
+@media (max-width: 1023px) {
+  .bento-col-5,
+  .bento-col-7,
+  .bento-col-8,
+  .bento-col-4 {
+    grid-column: span 12;
+  }
+
+  .hero {
+    padding: 2rem;
+    min-height: 260px;
+  }
+
+  .hero__cta {
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .bento-grid { gap: 1rem; }
+
+  .hero {
+    padding: 1.5rem;
+    min-height: 220px;
+  }
+
+  .hero__cta {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.875rem;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .hero__subtitle {
+    font-size: 0.875rem;
+  }
+
+  .dist-card__body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .dist-ring {
+    width: 8rem;
+    height: 8rem;
+    align-self: center;
+  }
+
+  .freq-card__bars {
+    height: 8rem;
+  }
+
+  .activity-item__title {
+    font-size: 0.875rem;
+  }
+}
