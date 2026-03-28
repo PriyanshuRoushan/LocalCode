@@ -12,7 +12,7 @@ const USER = {
   handle: "@alex_codes_24",
   level: 48,
   tags: ["Algorithms Specialist", "Distributed Systems"],
-  avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCmUpC0uccWBjEachkoO75V71HddiX5fq-qrGyPwSh8R-koct33UdZSk7CdZun9MWbfBE9XYtdXnGPw54IzmaX9JVY5crbDgiSoJWHEmpJEFV87QMVci6vh-ox6t8SZjACy9Ra6GQDPYr92AES7II-tTkE-QF7cKaBat-WAhvBnN8mk5LqIKBC3ltzftLIlydrjacfS4OAJEFVwFCCp0h2YAiHNdJkPfRhQyP0jcrh7fRYSr6Z2qzXJiIiW1-o1_Spzf7PWe6wXrFc",
+avatar: "/avatar.jpeg",
 };
 
 const STATS = [
