@@ -1,24 +1,13 @@
-// pages/LogoutPage.jsx
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
+import useAuthStore from '../store/useAuthStore';
 
 export default function LogoutPage() {
-  const navigate = useNavigate();
+  const { logout } = useAuthStore();
 
   useEffect(() => {
-    // Clear user session/auth data
-    // localStorage.removeItem('authToken');
-    // sessionStorage.clear();
-    
-    // Redirect to login
-    setTimeout(() => {
-      navigate("/login");
-    }, 500);
-  }, [navigate]);
+    logout();
+  }, [logout]);
 
-  return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-      <p>Logging out...</p>
-    </div>
-  );
+  return <Navigate to="/login" replace />;
 }

@@ -5,24 +5,27 @@ import ProblemPage from "./pages/ProblemPage.jsx";
 import SheetsPage from "./pages/SheetsPage.jsx";
 import SubmissionsPage from "./pages/SubmissionsPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
+import AuthPage from "./pages/AuthPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import LogoutPage from "./pages/LogoutPage.jsx";
+
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<DashboardPage />} />
-                <Route path="/problems" element={<ProblemsPage />} />
-                <Route path="/problem/:id" element={<ProblemPage />} />
-                <Route path="/sheets" element={<SheetsPage />} />
-                <Route path="/custom-sheets" element={<SheetsPage />} />
-                <Route path="/submissions" element={<SubmissionsPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/login" element={<AuthPage />} />
                 <Route path="/logout" element={<LogoutPage />} />
+                
+                <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+                <Route path="/problems" element={<ProtectedRoute><ProblemsPage /></ProtectedRoute>} />
+                <Route path="/problem/:id" element={<ProtectedRoute><ProblemPage /></ProtectedRoute>} />
+                <Route path="/sheets" element={<ProtectedRoute><SheetsPage /></ProtectedRoute>} />
+                <Route path="/custom-sheets" element={<ProtectedRoute><SheetsPage /></ProtectedRoute>} />
+                <Route path="/submissions" element={<ProtectedRoute><SubmissionsPage /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
             </Routes>
         </BrowserRouter>
     );

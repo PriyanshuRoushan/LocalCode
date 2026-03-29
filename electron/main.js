@@ -2,6 +2,8 @@ import {app, BrowserWindow , ipcMain} from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import db from './database.js';
+import crypto from 'crypto';
+import { startSyncService, syncData, setAuthToken } from './syncService.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,22 +20,35 @@ function createWindow () {
 
   win.loadURL('http://localhost:5173');
 }
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  startSyncService();
+});
 
 //Save Progress ✅
 ipcMain.handle("save-progress", (_, data) => {
+    const id = crypto.randomUUID();
     const stmt = db.prepare(`
-            INSERT INTO progress (problemId, status, code, language)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO progress (id, problemId, status, code, language, sync_status)
+            VALUES (?, ?, ?, ?, ?, 'pending')
         `);
         stmt.run(
+            id,
             data.problemId,
             data.status,
             data.code,
             data.language
         );
 
-        return { success: true};
+        // trigger immediate sync attempt
+        syncData();
+
+        return { success: true, id };
+});
+
+ipcMain.on("set-token", (_, token) => {
+    setAuthToken(token);
+    syncData(); // Attempt immediate sync when token is received
 });
 
 // Get all Progress ✅
