@@ -1,5 +1,6 @@
 // pages/ProfilePage.jsx
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import useAuthStore from "../store/useAuthStore";
 import "../styles/global.css";
 import "../styles/profile-submissions.css";
 
@@ -7,50 +8,141 @@ import Sidebar from "../components/Sidebar";
 import TopBar  from "../components/TopBar";
 import Icon    from "../components/Icon";
 
-const USER = {
-  name: "Alex Chen",
-  handle: "@alex_codes_24",
-  level: 48,
-  tags: ["Algorithms Specialist", "Distributed Systems"],
-avatar: "/avatar.jpeg",
-};
-
-const STATS = [
-  { label: "Total Solved", value: "1,428", meta: "+12 this week", metaClass: "stat-card__meta--gold", gold: true, icon: "task_alt" },
-  { label: "Global Rank",  value: "#1,240", meta: "Top 0.8% worldwide", metaClass: "stat-card__meta--muted" },
-  { label: "Success Rate", value: "94.2%", bar: 94.2 },
-  { label: "Coding Streak", value: "365 Days", meta: "Perfect Year Milestone Reached", metaClass: "stat-card__meta--muted", gold: true, valueCls: "text-primary-container" },
-];
-
-const BADGES = [
-  { icon: "workspace_premium", name: "Problem Crusher", tier: "Gold Tier" },
-  { icon: "bolt",              name: "Algorithm Ace",   tier: "Diamond Tier" },
-  { icon: "calendar_today",    name: "Consistent Coder",tier: "Legendary" },
-];
-
-const MILESTONES = [
-  { active: true,  date: "Yesterday",    dotIcon: "check",       title: "Solved 1,400th problem (Median of Two Sorted Arrays)", sub: 'Unlocked "Heavy Lifter" achievement badge' },
-  { active: false, date: "3 days ago",   dotIcon: "trending_up", title: "Reached Level 48",                                     sub: "Gained +2000 XP from weekly contest performance" },
-  { active: false, date: "1 week ago",   dotIcon: "military_tech",title: "Won Global Contest #248 (Rank 12)",                  sub: "Top solver in 'Dynamic Programming' category" },
-];
-
-// Generate heatmap data
-function generateHeatmap() {
-  const levels = [0, 1, 2, 3, 4];
-  const cells = [];
-  for (let i = 0; i < 7; i++) {
-    cells.push(levels[Math.floor(Math.random() * levels.length)]);
-  }
-  for (let i = 0; i < 350; i++) {
-    cells.push(levels[Math.floor(Math.random() * levels.length)]);
-  }
-  return cells;
-}
-
-const HEATMAP = generateHeatmap();
+import { MOCK_PROBLEM_METADATA } from "../data/dashboardData";
 
 export default function ProfilePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const user = useAuthStore((state) => state.user);
+
+  const [stats, setStats] = useState({
+    totalSolved: 0,
+    successRate: 0,
+    streak: 0,
+    heatmap: Array(357).fill(0),
+    totalSubmissions: 0,
+    recentMilestones: [],
+    loading: true
+  });
+
+  useEffect(() => {
+    async function loadStats() {
+      if (!window.electronAPI?.getProgress) {
+        setStats(s => ({ ...s, loading: false }));
+        return;
+      }
+      try {
+        const progress = await window.electronAPI.getProgress();
+        
+        let solvedIds = new Set();
+        let totalAc = 0;
+        let totalSub = progress.length;
+        
+        // Heatmap array: 357 days (51 weeks * 7 days)
+        // We'll map each submission to a day offset from today
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const dayCounts = new Map(); // offset => count
+        const activeDays = new Set();
+
+        progress.forEach((sub) => {
+          if (sub.status === "accepted") {
+            solvedIds.add(sub.problemId);
+            totalAc++;
+          }
+          
+          const subDate = new Date(sub.updatedAt);
+          subDate.setHours(0, 0, 0, 0);
+          
+          const diffTime = Math.abs(today - subDate);
+          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays < 357) {
+            dayCounts.set(diffDays, (dayCounts.get(diffDays) || 0) + 1);
+            activeDays.add(diffDays);
+          }
+        });
+
+        // Calculate Success Rate
+        const successRate = totalSub === 0 ? 0 : Math.round((totalAc / totalSub) * 1000) / 10;
+
+        // Calculate Streak (consecutive days starting from 0 or 1)
+        let currentStreak = 0;
+        let checkDay = 0;
+        // if today is not active, but yesterday is, streak still applies
+        if (!activeDays.has(0) && activeDays.has(1)) {
+          checkDay = 1;
+        }
+        while (activeDays.has(checkDay)) {
+          currentStreak++;
+          checkDay++;
+        }
+
+        // Generate Heatmap (0 to 4 levels)
+        // Index 356 is today, 0 is 357 days ago
+        const heatmapData = Array(357).fill(0);
+        for (let i = 0; i < 357; i++) {
+          const daysAgo = 356 - i;
+          const count = dayCounts.get(daysAgo) || 0;
+          let level = 0;
+          if (count > 0) level = 1;
+          if (count > 2) level = 2;
+          if (count > 4) level = 3;
+          if (count > 7) level = 4;
+          heatmapData[i] = level;
+        }
+
+        // Recent Milestones
+        const sortedSubmissions = [...progress].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        const recentMilestones = sortedSubmissions.slice(0, 3).map((sub, idx) => {
+          const meta = MOCK_PROBLEM_METADATA[sub.problemId] || MOCK_PROBLEM_METADATA.default;
+          const isAc = sub.status === "accepted";
+          return {
+            active: idx === 0,
+            date: new Date(sub.updatedAt).toLocaleDateString(),
+            dotIcon: isAc ? "check_circle" : "cancel",
+            title: `${isAc ? "Solved" : "Attempted"} ${meta.title}`,
+            sub: `Language: ${sub.language || 'Unknown'}`
+          };
+        });
+
+        setStats({
+          totalSolved: solvedIds.size,
+          successRate,
+          streak: currentStreak,
+          heatmap: heatmapData,
+          totalSubmissions: totalSub,
+          recentMilestones,
+          loading: false
+        });
+
+      } catch (err) {
+        console.error("Error loading profile stats:", err);
+        setStats(s => ({ ...s, loading: false }));
+      }
+    }
+
+    loadStats();
+  }, []);
+
+  const userName = user?.name || "Anonymous Developer";
+  // Generate a mock handle based on name
+  const userHandle = `@${userName.toLowerCase().replace(/\\s+/g, '_')}`;
+
+  const currentLevel = Math.floor(stats.totalSolved / 10) + 1; // 1 level per 10 solved
+
+  const dynamicStats = [
+    { label: "Total Solved", value: stats.totalSolved.toString(), meta: "Overall unique problems", metaClass: "stat-card__meta--gold", gold: true, icon: "task_alt" },
+    { label: "Global Rank",  value: "#--", meta: "Not calculated yet", metaClass: "stat-card__meta--muted" },
+    { label: "Success Rate", value: `${stats.successRate}%`, bar: stats.successRate },
+    { label: "Coding Streak", value: `${stats.streak} Days`, meta: stats.streak > 0 ? "Keep it up!" : "Solve a problem to start!", metaClass: "stat-card__meta--muted", gold: true, valueCls: "text-primary-container" },
+  ];
+
+  const BADGES = [
+    { icon: "workspace_premium", name: "Problem Crusher", tier: stats.totalSolved > 100 ? "Gold Tier" : "Bronze Tier" },
+    { icon: "bolt",              name: "Algorithm Ace",   tier: stats.successRate > 80 ? "Diamond Tier" : "Silver Tier" },
+    { icon: "calendar_today",    name: "Consistent Coder",tier: stats.streak > 7 ? "Legendary" : "Novice" },
+  ];
 
   return (
     <div className="app-shell">
@@ -66,22 +158,24 @@ export default function ProfilePage() {
             <section className="profile-hero" aria-label="Profile hero">
               <div className="profile-avatar-wrap">
                 <div className="profile-avatar">
-                  <img src={USER.avatar} alt={USER.name} />
+                  <img src="/avatar.jpeg" alt={userName} onError={(e) => { e.target.src = "https://ui-avatars.com/api/?name=" + userName; }} />
                 </div>
-                <div className="profile-level-badge">LVL {USER.level}</div>
+                <div className="profile-level-badge">LVL {currentLevel}</div>
               </div>
 
               <div className="profile-info">
                 <div className="profile-name-row">
-                  <h2 className="profile-name">{USER.name}</h2>
-                  <div className="profile-master-badge">
-                    <Icon name="verified" filled style={{ fontSize: "12px" }} />
-                    Master
-                  </div>
+                  <h2 className="profile-name">{userName}</h2>
+                  {currentLevel > 10 && (
+                    <div className="profile-master-badge">
+                      <Icon name="verified" filled style={{ fontSize: "12px" }} />
+                      Master
+                    </div>
+                  )}
                 </div>
-                <p className="profile-handle">{USER.handle}</p>
+                <p className="profile-handle">{userHandle}</p>
                 <div className="profile-tags">
-                  {USER.tags.map((t) => <span key={t} className="profile-tag">{t}</span>)}
+                  <span className="profile-tag">Algorithms Explorer</span>
                 </div>
                 <div className="profile-actions">
                   <button className="profile-edit-btn">Edit Profile</button>
@@ -94,7 +188,7 @@ export default function ProfilePage() {
 
             {/* ── Stats ── */}
             <section className="profile-stats-grid" aria-label="Profile statistics">
-              {STATS.map((s) => (
+              {dynamicStats.map((s) => (
                 <div key={s.label} className={`stat-card${s.gold ? " stat-card--gold" : " stat-card--muted"}`}>
                   {s.icon && <Icon name={s.icon} className="stat-card__bg-icon" aria-hidden="true" />}
                   <p className="stat-card__label">{s.label}</p>
@@ -157,14 +251,18 @@ export default function ProfilePage() {
 
                 <div className="heatmap-grid-wrap">
                   <div className="heatmap-grid">
-                    {HEATMAP.map((level, i) => (
+                    {stats.heatmap.map((level, i) => (
                       <div key={i} className={`heatmap-cell heatmap-cell--${level}`} />
                     ))}
                   </div>
                 </div>
 
                 <div className="heatmap-footer">
-                  {[["Submissions", "3,204"], ["Longest Streak", "122 Days"], ["Current Month", "452"]].map(([label, val]) => (
+                  {[
+                    ["Submissions", stats.totalSubmissions.toString()], 
+                    ["Current Streak", `${stats.streak} Days`], 
+                    ["Total Solved", stats.totalSolved.toString()]
+                  ].map(([label, val]) => (
                     <div key={label}>
                       <p className="heatmap-metric__label">{label}</p>
                       <p className="heatmap-metric__val">{val}</p>
@@ -175,12 +273,12 @@ export default function ProfilePage() {
             </div>
 
             {/* ── Badges + Milestones ── */}
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                  gap: "2rem"
-                }}>
-                <div>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "2rem"
+            }}>
+              <div>
                 <h4 className="section-label" style={{ marginBottom: "1.5rem" }}>Mastery Badges</h4>
                 <div className="badges-grid">
                   {BADGES.map((b) => (
@@ -198,19 +296,23 @@ export default function ProfilePage() {
               <div>
                 <h4 className="section-label" style={{ marginBottom: "1.5rem" }}>Recent Milestones</h4>
                 <div className="timeline">
-                  {MILESTONES.map((m, i) => (
-                    <div key={i} className="timeline-item">
-                      <div className="timeline-item__line" />
-                      <div className={`timeline-item__dot timeline-item__dot--${m.active ? "active" : "inactive"}`}>
-                        <Icon name={m.dotIcon} />
+                  {stats.recentMilestones.length > 0 ? (
+                    stats.recentMilestones.map((m, i) => (
+                      <div key={i} className="timeline-item">
+                        <div className="timeline-item__line" />
+                        <div className={`timeline-item__dot timeline-item__dot--${m.active ? "active" : "inactive"}`}>
+                          <Icon name={m.dotIcon} />
+                        </div>
+                        <div className="timeline-item__content">
+                          <p className={`timeline-item__date timeline-item__date--${m.active ? "active" : "inactive"}`}>{m.date}</p>
+                          <p className="timeline-item__title">{m.title}</p>
+                          <p className="timeline-item__sub">{m.sub}</p>
+                        </div>
                       </div>
-                      <div className="timeline-item__content">
-                        <p className={`timeline-item__date timeline-item__date--${m.active ? "active" : "inactive"}`}>{m.date}</p>
-                        <p className="timeline-item__title">{m.title}</p>
-                        <p className="timeline-item__sub">{m.sub}</p>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p style={{ color: "var(--text-dim)" }}>No active milestones yet. Keep solving!</p>
+                  )}
                 </div>
               </div>
             </div>

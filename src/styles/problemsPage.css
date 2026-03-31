@@ -1,0 +1,93 @@
+/* ============================================================
+   problemsPage.css — styled table for problem set
+   ============================================================ */
+
+.problems-container {
+  background-color: var(--surface-container-lowest);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+.problems-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.problems-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--on-surface);
+}
+
+.problems-search {
+  background-color: var(--surface);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  color: var(--on-surface);
+  font-size: 0.875rem;
+  width: 200px;
+  outline: none;
+}
+
+.problems-table-wrapper {
+  overflow-x: auto;
+}
+
+.problems-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.problems-table th, .problems-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.problems-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #737373;
+  font-weight: 700;
+}
+
+.problems-table tr {
+  transition: background-color var(--transition-fast);
+}
+
+.problems-table tbody tr:hover {
+  background-color: rgba(255,255,255,0.02);
+  cursor: pointer;
+}
+
+.prob-id {
+  font-family: monospace;
+  color: var(--primary-fixed-dim);
+}
+
+.prob-title {
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.prob-rating {
+  font-size: 0.875rem;
+  color: #f59e0b; /* nice amber color */
+}
+
+.prob-tag {
+  display: inline-block;
+  background-color: var(--surface-container-high);
+  color: #a3a3a3;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  margin-right: 0.375rem;
+  margin-bottom: 0.375rem;
+}
