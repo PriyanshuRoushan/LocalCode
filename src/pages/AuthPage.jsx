@@ -219,7 +219,7 @@ export default function AuthPage() {
           <div className="auth-brand__icon-wrap">
             <Icon name="architecture" className="auth-brand__icon" />
           </div>
-          <h1 className="auth-brand__title">Architect</h1>
+          <h1 className="auth-brand__title">LocalCode</h1>
           <p className="auth-brand__sub">LocalCode Workspace</p>
         </header>
 

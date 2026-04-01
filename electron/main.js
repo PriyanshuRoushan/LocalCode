@@ -17,7 +17,10 @@ function createWindow () {
     width: 1400,
     height: 900,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      sandbox: false,
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
 
@@ -28,30 +31,20 @@ app.whenReady().then(() => {
   startSyncService();
 });
 
-//Save Progress ✅
+// Save Progress ✅
 ipcMain.handle("save-progress", (_, data) => {
     const id = crypto.randomUUID();
-    const stmt = db.prepare(`
-            INSERT INTO progress (id, problemId, status, code, language, sync_status)
-            VALUES (?, ?, ?, ?, ?, 'pending')
-        `);
-        stmt.run(
-            id,
-            data.problemId,
-            data.status,
-            data.code,
-            data.language
-        );
-
-        // trigger immediate sync attempt
-        syncData();
-
-        return { success: true, id };
+    db.prepare(`
+        INSERT INTO progress (id, problemId, status, code, language, sync_status)
+        VALUES (?, ?, ?, ?, ?, 'pending')
+    `).run(id, data.problemId, data.status, data.code, data.language);
+    syncData();
+    return { success: true, id };
 });
 
 ipcMain.on("set-token", (_, token) => {
     setAuthToken(token);
-    syncData(); // Attempt immediate sync when token is received
+    syncData();
 });
 
 // Get all Progress ✅
@@ -59,62 +52,82 @@ ipcMain.handle("get-progress", () => {
     return db.prepare("SELECT * FROM progress").all();
 });
 
-// ── Question Page IPC Handlers ────────────────────────────────
+// ── Get all problems — uses problems_io.db schema ─────────────
 ipcMain.handle("get-all-problems", () => {
-    return db.prepare("SELECT id, title, rating, tags FROM problems ORDER BY rating ASC").all();
+    const rows = db.prepare(
+        "SELECT id, title, rating, tags, time_limit, memory_limit FROM problems ORDER BY rating ASC"
+    ).all();
+
+    return rows.map(p => ({
+        ...p,
+        // tags are comma-separated strings in problems_io.db
+        tags: p.tags ? p.tags.split(",").map(t => t.trim()).filter(Boolean) : [],
+    }));
 });
 
+// ── Get single problem ────────────────────────────────────────
 ipcMain.handle("get-problem", async (_, id) => {
     let problem = db.prepare("SELECT * FROM problems WHERE id = ?").get(id);
     if (!problem) throw new Error("Problem not found");
-    
+
     // On-demand scraping if description is missing
-    if (!problem.description || problem.description === '""' || problem.description === "") {
-        console.log(`[IPC] Fetching description for ${id} on-demand from Codeforces...`);
+    if (!problem.description || problem.description === "") {
+        console.log(`[IPC] Fetching ${id} on-demand from Codeforces...`);
         try {
             const { scrapeProblem } = await import('../server/script/scrapeProblem.js');
             const match = id.match(/^(\d+)([A-Z]\d*)$/);
             if (match) {
-                const contestId = match[1];
-                const index = match[2];
-                const data = await scrapeProblem(contestId, index);
-                
-                // Update problem in DB
-                db.prepare("UPDATE problems SET description = ? WHERE id = ?").run(JSON.stringify(data.description), id);
-                
-                // Insert test cases
-                const insertTestCase = db.prepare("INSERT INTO test_cases (problem_id, input, output) VALUES (?, ?, ?)");
+                const data = await scrapeProblem(match[1], match[2]);
+
+                db.prepare(`
+                    UPDATE problems
+                    SET description = ?, input_format = ?, output_format = ?, note = ?
+                    WHERE id = ?
+                `).run(
+                    JSON.stringify(data.description),
+                    data.inputFormat ?? "",
+                    data.outputFormat ?? "",
+                    data.note ?? "",
+                    id
+                );
+
+                const insertTC = db.prepare(
+                    "INSERT INTO test_cases (problem_id, input, output, case_number) VALUES (?, ?, ?, ?)"
+                );
                 db.transaction(() => {
                     db.prepare("DELETE FROM test_cases WHERE problem_id = ?").run(id);
-                    for (const tc of data.testCases) {
-                        insertTestCase.run(id, tc.input, tc.output);
-                    }
+                    data.testCases.forEach((tc, i) => insertTC.run(id, tc.input, tc.output, i + 1));
                 })();
-                
-                // Re-fetch problem
+
                 problem = db.prepare("SELECT * FROM problems WHERE id = ?").get(id);
-                console.log(`[IPC] Successfully scraped and cached ${id}`);
+                console.log(`[IPC] Scraped and cached ${id}`);
             }
         } catch (err) {
             console.error("[IPC] On-demand scraping failed:", err);
         }
     }
 
-    // Parse description array back
+    // Parse description
     if (problem.description) {
-        try { problem.description = JSON.parse(problem.description); } 
+        try { problem.description = JSON.parse(problem.description); }
         catch (_) { problem.description = [problem.description]; }
-    }
-    if (problem.tags) {
-        try { problem.tags = JSON.parse(problem.tags); }
-        catch (_) { problem.tags = [problem.tags]; }
+    } else {
+        problem.description = [];
     }
 
-    const testCases = db.prepare("SELECT * FROM test_cases WHERE problem_id = ? LIMIT 2").all(id);
+    // Parse tags (comma-separated)
+    problem.tags = problem.tags
+        ? problem.tags.split(",").map(t => t.trim()).filter(Boolean)
+        : [];
+
+    // Attach examples from test_cases
+    const testCases = db.prepare(
+        "SELECT * FROM test_cases WHERE problem_id = ? ORDER BY case_number ASC LIMIT 3"
+    ).all(id);
     problem.examples = testCases.map(tc => ({
         input: tc.input,
         output: tc.output,
-        explanation: ""
+        explanation: "",
     }));
 
     return problem;
@@ -122,15 +135,13 @@ ipcMain.handle("get-problem", async (_, id) => {
 
 ipcMain.handle("run-code", async (_, { problemId, language, code, testInput }) => {
     const start = performance.now();
-    let stdout = "";
     try {
+        let stdout = "";
         if (language === "cpp") stdout = await runCpp(code, testInput);
         else if (language === "python") stdout = await runPython(code, testInput);
         else if (language === "java") stdout = await runJava(code, testInput);
         else throw new Error("Unsupported language");
-        
-        const time = Math.round(performance.now() - start);
-        return { stdout, stderr: "", time };
+        return { stdout, stderr: "", time: Math.round(performance.now() - start) };
     } catch (err) {
         return { stdout: "", stderr: err.toString(), time: null };
     }
@@ -139,7 +150,7 @@ ipcMain.handle("run-code", async (_, { problemId, language, code, testInput }) =
 ipcMain.handle("submit-code", async (_, { problemId, language, code }) => {
     const testCases = db.prepare("SELECT * FROM test_cases WHERE problem_id = ?").all(problemId);
     if (!testCases || testCases.length === 0) {
-        return { verdict: "System Error", stderr: "No test cases found in local SQLite database for this problem." };
+        return { verdict: "System Error", stderr: "No test cases found for this problem." };
     }
 
     let passedCases = 0;
@@ -148,48 +159,41 @@ ipcMain.handle("submit-code", async (_, { problemId, language, code }) => {
 
     for (const tc of testCases) {
         const start = performance.now();
-        let out = "";
         try {
+            let out = "";
             if (language === "cpp") out = await runCpp(code, tc.input);
             else if (language === "python") out = await runPython(code, tc.input);
             else if (language === "java") out = await runJava(code, tc.input);
-            
+
             totalTime += Math.round(performance.now() - start);
-            
-            // Clean outputs (trim whitespace)
-            const actual = out.trim();
-            const expected = tc.output.trim();
-            
-            if (actual === expected) {
-                passedCases++;
-            } else {
-                return { 
-                    verdict: "Wrong Answer", 
-                    passedCases, 
-                    totalCases, 
-                    stdout: `Expected: \n${expected}\n\nOutput: \n${actual}`,
-                    runtime: `${totalTime} ms`
+            if (out.trim() !== tc.output.trim()) {
+                return {
+                    verdict: "Wrong Answer",
+                    passedCases,
+                    totalCases,
+                    stdout: `Expected:\n${tc.output.trim()}\n\nGot:\n${out.trim()}`,
+                    runtime: `${totalTime} ms`,
                 };
             }
+            passedCases++;
         } catch (err) {
             return { verdict: "Runtime Error", stderr: err.toString(), passedCases, totalCases };
         }
     }
 
-    // Save accepted progress
     const attemptId = crypto.randomUUID();
     db.prepare(`
         INSERT INTO progress (id, problemId, status, code, language, sync_status)
         VALUES (?, ?, 'accepted', ?, ?, 'pending')
     `).run(attemptId, problemId, code, language);
-    syncData(); // background sync
+    syncData();
 
     return {
         verdict: "Accepted",
         passedCases,
         totalCases,
         runtime: `${totalTime} ms`,
-        memory: "14.2 MB", // Mocked memory for now
-        stdout: "All test cases passed!"
+        memory: "14.2 MB",
+        stdout: "All test cases passed!",
     };
 });
